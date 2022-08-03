@@ -1,0 +1,50 @@
+import "contrib/jsternberg/math"
+
+option task = {name: "process / calculation", cron: "* * * * *"}
+
+from(bucket: "DEV")
+    |> range(start: -1m)
+    |> filter(fn: (r) => r["_measurement"] == "live_data")
+    |> filter(fn: (r) => r["SECTOR"] == "BANKS")
+    |> filter(fn: (r) => r["INDEX"] == "NASDAQ-100")
+    |> filter(
+        fn: (r) =>
+            r["Quarter"] == "Q1" or r["Quarter"] == "Q2" or r["Quarter"]
+                ==
+                "Q3" or r["Quarter"] == "Q4",
+    )
+    |> filter(fn: (r) => r["_field"] == "current")
+    |> sort(columns: ["_time"])
+    |> pivot(rowKey: ["_time"], columnKey: ["Quarter"], valueColumn: "_value")
+    |> map(
+        fn: (r) =>
+            ({r with "Q1":
+                    if exists r["Q1"] then r["Q1"] else 0.0,
+                "Q2":
+                    if exists r["Q2"] then r["Q2"] else 0.0,
+                "Q3":
+                    if exists r["Q3"] then r["Q3"] else 0.0,
+                "Q4":
+                    if exists r["Q4"] then r["Q4"] else 0.0,
+            }),
+    )
+    |> map(
+        fn: (r) =>
+            ({r with _value:
+                    math.max(values: [r.Q1, r.Q2]) + math.max(
+                            values: [r.Q3, r.Q4],
+                        ),
+            }),
+    )
+    |> drop(
+        columns: [
+            "Q1",
+            "Q2",
+            "Q3",
+            "Q4",
+        ],
+    )
+    |> map(fn: (r) => ({r with "_field": "calculated"}))
+    |> map(fn: (r) => ({r with "APP": if exists r["APP"] then r["APP"] else "SPI"}))
+    |> map(fn: (r) => ({r with "group": "Sigma"}))
+    |> to(bucket: "PROD")
