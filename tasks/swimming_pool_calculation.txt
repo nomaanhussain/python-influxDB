@@ -1,0 +1,106 @@
+import "contrib/jsternberg/math"
+
+option task = {name: "CATALYST_SOLE RESIDENT POOL AREA", cron: "* * * * *"}
+
+
+from(bucket: "STAGING")
+    |> range(start: -1m)
+    |> filter(fn: (r) => r["_measurement"] == "zone")
+    |> filter(fn: (r) => r["inst"] == "CATALYST_SOLE")
+    |> filter(fn: (r) => r["group"] == "POOL_AREA")
+    |> filter(fn: (r) => r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_C1" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_C2" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S1" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S2" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S3" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S4" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S5" or r["zone"] == "CATALYST_SOLE_POOL_DECK_EAST_POOL_S7" or r["zone"] == "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL" or r["zone"] == "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT" or r["zone"] == "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G" or r["zone"] == "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S1" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S2" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S3" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S4" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S6" or r["zone"] == "CATALYST_SOLE_POOL_DECK_WEST_POOL_S7")
+    |> filter(fn: (r) => r["_field"] == "count")
+    |> group()
+    |> pivot(rowKey: ["_time"], columnKey: ["zone"], valueColumn: "_value")
+    |> map(
+        fn: (r) =>
+            ({r with "CATALYST_SOLE_POOL_DECK_EAST_POOL_C1":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_C1"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_C1"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_C2":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_C2"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_C2"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S1":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S1"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S1"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S2":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S2"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S2"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S3":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S3"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S3"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S4":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S4"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S4"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S5":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S5"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S5"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_EAST_POOL_S7":
+                    if exists r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S7"] then r["CATALYST_SOLE_POOL_DECK_EAST_POOL_S7"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL":
+                    if exists r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL"] then r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT":
+                    if exists r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT"] then r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G":
+                    if exists r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G"] then r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2":
+                    if exists r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2"] then r["CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S1":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S1"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S1"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S2":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S2"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S2"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S3":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S3"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S3"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S4":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S4"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S4"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S6":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S6"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S6"] else 0.0,
+                "CATALYST_SOLE_POOL_DECK_WEST_POOL_S7":
+                    if exists r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S7"] then r["CATALYST_SOLE_POOL_DECK_WEST_POOL_S7"] else 0.0,
+            }),
+    )
+    |> map(
+        fn: (r) =>
+            ({r with _value:
+                    r.CATALYST_SOLE_POOL_DECK_EAST_POOL_C2 + r.CATALYST_SOLE_POOL_DECK_EAST_POOL_C1 + r.CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA + 
+                    r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S6 + r.CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT + r.CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G + 
+                    r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S5 + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S1, r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S1]) + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S2, r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S2 , r.CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2]) + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S3, r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S3]) + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S4, r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S4]) + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL_S7, r.CATALYST_SOLE_POOL_DECK_WEST_POOL_S7]) + 
+                    math.max(values: [r.CATALYST_SOLE_POOL_DECK_EAST_POOL, r.CATALYST_SOLE_POOL_DECK_WEST_POOL, r.CATALYST_SOLE_POOL_DECK_FIREPIT_POOL])
+            }),
+    )
+    |> drop(
+        columns: [
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_C1",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_C2",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_CABANA",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S1",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S2",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S3",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S4",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S5",
+            "CATALYST_SOLE_POOL_DECK_EAST_POOL_S7",
+            "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL",
+            "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_FIREPIT",
+            "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_G",
+            "CATALYST_SOLE_POOL_DECK_FIREPIT_POOL_S2",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S1",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S2",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S3",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S4",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S6",
+            "CATALYST_SOLE_POOL_DECK_WEST_POOL_S7",
+        ],
+    )
+    |> map(fn: (r) => ({r with "inst": "CATALYST_SOLE"}))
+    |> map(fn: (r) => ({r with "_measurement": "zone"}))
+    |> map(fn: (r) => ({r with "_field": "calculated"}))
+    |> map(fn: (r) => ({r with "APP": if exists r["APP"] then r["APP"] else "RESIDENT_APP"}))
+    |> map(fn: (r) => ({r with "group": "POOL AREA"}))
+    |> map(fn: (r) => ({r with "classes": "PERSON"}))        
+    |> to(bucket: "processed_STAGING")
